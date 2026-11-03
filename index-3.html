@@ -1,0 +1,596 @@
+<title>The 100 Laws of Avoidant</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap">
+<style>
+/* Layout concept: a pocket-size hardcover on a desk. One law per page, a blue spine strip down the left edge,
+   a red cover cut by a horizontal blue band. Pages flip by swipe or by tapping the page edges.
+   Law text is plain lowercase; the cover and the author line use one regular system font. */
+:root {
+  /* page tokens (theme-aware) */
+  --desk: #C7CCDD;
+  --page: #ECEEF4;
+  --page-edge: #D5D9E7;
+  --ink: #151A45;
+  --ink-soft: #4B5179;
+  --red: #B3261E;
+  --gold: #7D5A0C;
+  --gold-line: #B8923A;
+  /* cover tokens (same in both themes) */
+  --c-red: #A9231B;
+  --c-red-deep: #7E1712;
+  --c-blue: #1A2680;
+  --c-gold: #E3BE62;
+  --c-gold-deep: #B98F2D;
+  --c-paper: #F4E9CF;
+  /* type */
+  --f-numeral: "Cinzel", "Times New Roman", serif;
+  --f-body: "Newsreader", Georgia, "Times New Roman", serif;
+  --f-ui: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --desk: #070920;
+    --page: #10143A;
+    --page-edge: #0A0D2B;
+    --ink: #EFE8D6;
+    --ink-soft: #A9ADCB;
+    --red: #E2574C;
+    --gold: #E3BE62;
+    --gold-line: #B98F2D;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --desk: #070920;
+  --page: #10143A;
+  --page-edge: #0A0D2B;
+  --ink: #EFE8D6;
+  --ink-soft: #A9ADCB;
+  --red: #E2574C;
+  --gold: #E3BE62;
+  --gold-line: #B98F2D;
+  color-scheme: dark;
+}
+
+html, body { height: 100%; }
+body {
+  background: var(--desk);
+  color: var(--ink);
+  font-family: var(--f-body);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-block: 12px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  overflow-x: hidden;
+}
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--gold-line); outline-offset: 2px; }
+
+/* top strip */
+.top {
+  width: min(100%, 480px);
+  margin-inline: auto;
+  font-family: var(--f-ui);
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.progress {
+  width: min(100%, 480px);
+  margin-inline: auto;
+  height: 2px;
+  background: var(--page-edge);
+}
+.progress i { display: block; height: 100%; width: 0; background: var(--gold-line); transition: width .35s ease; }
+
+/* stage + sheet */
+main {
+  flex: 1;
+  min-height: 0;
+  width: min(100%, 480px);
+  margin-inline: auto;
+  display: flex;
+  touch-action: pan-y;
+  perspective: 1400px;
+  position: relative;
+}
+.sheet {
+  container-type: inline-size;
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  overflow: hidden;
+  border-radius: 3px 10px 10px 3px;
+  background: var(--page);
+  box-shadow: 0 1px 0 var(--page-edge), 0 14px 28px -12px rgba(5, 8, 40, .45), 0 0 0 1px var(--page-edge);
+  transform-origin: left center;
+}
+.sheet::after {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0; right: 0;
+  width: 5px;
+  background: repeating-linear-gradient(to left, rgba(0, 0, 0, .18) 0, rgba(0, 0, 0, .18) 1px, transparent 1px, transparent 3px);
+  pointer-events: none;
+}
+.sheet.flip-next { animation: flipNext .42s cubic-bezier(.2, .7, .2, 1); }
+.sheet.flip-prev { animation: flipPrev .42s cubic-bezier(.2, .7, .2, 1); }
+@keyframes flipNext { from { opacity: 0; transform: rotateY(-16deg) translateX(18px); } to { opacity: 1; transform: none; } }
+@keyframes flipPrev { from { opacity: 0; transform: rotateY(16deg) translateX(-18px); } to { opacity: 1; transform: none; } }
+
+/* invisible tap zones on the page edges */
+.zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 22%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  z-index: 2;
+  -webkit-tap-highlight-color: transparent;
+}
+.zl { left: 0; }
+.zr { right: 0; }
+main[data-t="blank"] .zone { bottom: auto; height: 36%; }
+
+/* law page */
+.law-page { height: 100%; display: flex; }
+.spine {
+  flex: 0 0 11cqi;
+  background: var(--c-blue);
+  border-right: 1px solid var(--c-gold-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.spine span {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--f-ui);
+  font-weight: 600;
+  font-size: 3cqi;
+  letter-spacing: .34em;
+  color: var(--c-gold);
+  white-space: nowrap;
+}
+.leaf {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 7cqi 7cqi 6cqi;
+  overflow-y: auto;
+}
+.kicker {
+  font-family: var(--f-ui);
+  font-weight: 500;
+  font-size: 3.8cqi;
+  letter-spacing: .24em;
+  color: var(--gold);
+}
+.numeral {
+  font-family: var(--f-numeral);
+  font-weight: 900;
+  font-size: 30cqi;
+  line-height: .95;
+  color: var(--red);
+  letter-spacing: -.01em;
+  font-variant-numeric: lining-nums;
+}
+.rule { width: 14cqi; height: 2px; background: var(--gold-line); margin-block: 5cqi; }
+.law {
+  font-family: var(--f-body);
+  font-weight: 500;
+  font-size: 9.2cqi;
+  line-height: 1.2;
+  text-wrap: balance;
+  color: var(--ink);
+  margin: auto 0;
+  padding-block: 4cqi;
+}
+.law.long { font-size: 7.4cqi; line-height: 1.25; }
+.author {
+  margin-top: 4cqi;
+  padding-top: 3.5cqi;
+  border-top: 1px solid var(--page-edge);
+  font-family: var(--f-ui);
+  font-size: 3.4cqi;
+  letter-spacing: .04em;
+  color: var(--ink-soft);
+}
+
+/* blank law 100 */
+.blank-note {
+  font-family: var(--f-body);
+  font-style: italic;
+  font-size: 6cqi;
+  color: var(--ink-soft);
+  margin-top: 2cqi;
+}
+.lined {
+  flex: 1;
+  min-height: 90px;
+  margin-top: 4cqi;
+  width: 100%;
+  resize: none;
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+  background-image: repeating-linear-gradient(to bottom, transparent 0, transparent calc(1.7em - 1px), var(--gold-line) calc(1.7em - 1px), var(--gold-line) 1.7em);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 6.6cqi;
+  line-height: 1.7;
+  padding: 0;
+}
+.lined::placeholder { color: var(--ink-soft); opacity: .8; font-style: italic; }
+.lined:focus-visible { outline: none; }
+
+/* cover + back cover: one plain system font */
+.cover {
+  height: 100%;
+  background: var(--c-red);
+  background-image: radial-gradient(120% 70% at 50% 0%, rgba(255, 255, 255, .10), transparent 60%), linear-gradient(to right, rgba(0, 0, 0, .22), transparent 6%);
+  color: var(--c-gold);
+  font-family: var(--f-ui);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 8cqi 7cqi 7cqi;
+  overflow: hidden;
+}
+.cover::before {
+  content: "";
+  position: absolute; inset: 3.2cqi;
+  border: 1px solid rgba(227, 190, 98, .55);
+  pointer-events: none;
+}
+.seal {
+  width: 26cqi; height: 26cqi;
+  background: linear-gradient(145deg, #F3DC93, var(--c-gold-deep));
+  color: var(--c-red-deep);
+  display: grid; place-content: center; text-align: center;
+  transform: rotate(-9deg);
+  position: relative;
+  flex: none;
+}
+.seal::after { content: ""; position: absolute; inset: 8%; border: 1px dashed rgba(126, 23, 18, .6); border-radius: 50%; }
+.seal strong { font-weight: 800; font-size: 6.4cqi; letter-spacing: .06em; line-height: 1; }
+.seal small { font-size: 2.4cqi; margin-top: 1cqi; }
+.band {
+  margin: auto -7cqi;
+  background: var(--c-blue);
+  border-block: 1px solid var(--c-gold-deep);
+  padding: 6cqi 7cqi 7cqi;
+  text-align: center;
+  box-shadow: 0 0 0 1.2cqi var(--c-blue), 0 0 0 1.4cqi var(--c-gold-deep);
+}
+.band .pre {
+  font-weight: 500;
+  font-size: 4cqi;
+  letter-spacing: .42em;
+  margin-right: -.42em;
+  color: var(--c-gold);
+}
+.band h1 {
+  font-weight: 700;
+  font-size: 12.4cqi;
+  line-height: 1.1;
+  letter-spacing: .08em;
+  margin: 2.5cqi -.08em 0 0;
+  color: var(--c-gold);
+}
+.by {
+  font-family: var(--f-ui);
+  font-weight: 500;
+  font-size: 4cqi;
+  letter-spacing: .05em;
+  color: var(--c-gold);
+}
+.band .by {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  margin: 5cqi auto 0;
+  padding-top: 3.5cqi;
+  border-top: 1px solid rgba(227, 190, 98, .45);
+}
+.cover .open { margin: 0 auto; }
+.cover .hint {
+  margin-top: 3.5cqi;
+  text-align: center;
+  font-size: 3cqi;
+  letter-spacing: .04em;
+  color: rgba(244, 233, 207, .78);
+}
+.btn-gold {
+  border: 1px solid var(--c-gold);
+  background: transparent;
+  color: var(--c-gold);
+  font-family: var(--f-ui);
+  font-weight: 600;
+  font-size: 3.8cqi;
+  letter-spacing: .26em;
+  padding: 3.2cqi 7cqi 3.2cqi calc(7cqi + .26em);
+  min-height: 44px;
+  text-transform: uppercase;
+}
+.btn-gold:hover { background: rgba(227, 190, 98, .14); }
+
+.end { justify-content: center; text-align: center; }
+.end .big {
+  font-weight: 700;
+  font-size: 10cqi;
+  letter-spacing: .1em;
+  line-height: 1.05;
+  color: var(--c-gold);
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.end p.count { margin-top: 5cqi; font-size: 4.6cqi; line-height: 1.4; color: var(--c-paper); text-wrap: balance; }
+.end .row { margin-top: 7cqi; display: flex; flex-wrap: wrap; gap: 3cqi; justify-content: center; }
+.end .end-by { margin-top: 9cqi; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet.flip-next, .sheet.flip-prev { animation: none; }
+  .progress i { transition: none; }
+}
+</style>
+
+<div class="top">The 100 Laws of Avoidant</div>
+<div class="progress" aria-hidden="true"><i id="bar"></i></div>
+<main id="stage">
+  <section class="sheet" id="sheet" aria-live="polite"></section>
+  <button class="zone zl" id="zl" type="button" aria-label="Nakaraang pahina"></button>
+  <button class="zone zr" id="zr" type="button" aria-label="Susunod na pahina"></button>
+</main>
+
+<script>
+const AUTHOR = "@m.lisaa_hen on ig";
+const LAWS = [
+  "bawal maligo.",
+  "kapag minessage, seen muna bago reply.",
+  "reply after 3–5 business days.",
+  "kapag kinamusta, dapat \"okay lang.\"",
+  "never explain, just disappear.",
+  "kapag hinanap, magtago.",
+  "online pero hindi available.",
+  "allergic sa commitment.",
+  "bawal maging marupok.",
+  "dapat laging may personal space.",
+  "kapag may problema, matulog.",
+  "kapag may confrontation, airplane mode.",
+  "wag mag-first move, nakakasira ng image.",
+  "kapag miss mo, tiisin mo.",
+  "bawal mag-double chat.",
+  "kapag tinanong kung galit, sabihin \"hindi.\"",
+  "dapat mysterious at all times.",
+  "bawal maging predictable.",
+  "kapag naging sweet, umatras agad.",
+  "bawal magpakita ng weakness.",
+  "kapag may nag-confess, mag-loading.",
+  "huwag masyadong maging masaya, baka ma-attach.",
+  "kapag tinawag na baby, mag-log out.",
+  "seen is a love language.",
+  "reply is a privilege.",
+  "dapat may 48-hour cooling period bago mag-reply.",
+  "kapag may nagtanong ng feelings, mag-crash ang system.",
+  "bawal mag-update ng whereabouts.",
+  "kapag may nagtanong ng \"where are you?\", nasa ibang dimension.",
+  "kapag may tampuhan, magbakasyon.",
+  "wag magpakita ng affection nang walang permit.",
+  "kapag may nag-good morning, good afternoon na ang reply.",
+  "dapat may emergency exit sa bawat relationship.",
+  "kapag nagiging serious, magkunwaring busy.",
+  "bawal maging emotionally available 24/7.",
+  "kapag may nagtanong ng future plans, \"bahala na.\"",
+  "huwag magbigay ng mixed signals. magbigay ng confusing signals.",
+  "kapag may problema, sariling sikap department.",
+  "kapag may nagtanong kung miss mo siya, deny everything.",
+  "dapat may sariling mundo.",
+  "kapag nagiging attached, mag-uninstall.",
+  "wag mag-backread, delikado sa mental stability.",
+  "kapag may nag-send ng paragraph, reply \"HAHAHA.\"",
+  "kapag may nagtanong ng \"what are we?\", system error 404.",
+  "dapat laging may excuse para umuwi.",
+  "kapag may nagyakap, calculate escape route.",
+  "bawal magpakita ng excitement.",
+  "kapag may nagtanong ng \"do you love me?\", restart required.",
+  "dapat may sariling schedule ng pagiging missing.",
+  "kapag may nagparamdam, magpanggap na tulog.",
+  "bawal mag-share ng childhood trauma sa first meeting.",
+  "kapag may nagtanong ng password ng feelings, access denied.",
+  "huwag magtiwala sa butterflies.",
+  "kapag may nagbigay ng assurance, magduda muna.",
+  "dapat may 10-meter emotional distance.",
+  "kapag may nagtanong kung okay ka, \"goods.\"",
+  "wag magpakita ng interest kahit interested.",
+  "kapag may nagtanong kung bakit tahimik, \"wala lang.\"",
+  "dapat laging may backup plan na pagiging single.",
+  "kapag may nagtanong kung bakit cold, aircon lang.",
+  "bawal magpakita ng clingy behavior.",
+  "kapag may nagtanong kung nasaan ang lambing, out of stock.",
+  "dapat may sariling curfew ang emotions.",
+  "kapag may nagtanong kung bakit distant, low battery.",
+  "wag mag-expect, para walang disappointment.",
+  "kapag may nag-send ng \"i miss you,\" i-mute muna.",
+  "dapat may sariling privacy policy.",
+  "kapag may nagtanong kung may problema, maintenance mode.",
+  "bawal maging open book, password protected dapat.",
+  "kapag may nagtanong kung bakit biglang nawala, nag-update lang ng buhay.",
+  "dapat laging may exit strategy.",
+  "kapag may nagtanong kung bakit ayaw mag-call, text support only.",
+  "wag magpakita ng selos, nakakabawas ng aura.",
+  "kapag may nagtanong kung may feelings, buffering.",
+  "dapat may sariling emotional firewall.",
+  "kapag may nagtanong kung bakit hindi nag-reply, nakalimutan kahit online.",
+  "huwag mag-invest ng feelings nang walang return policy.",
+  "kapag may nagtanong kung bakit hindi nag-open up, confidential information.",
+  "dapat may sariling bubble wrap ang puso.",
+  "kapag may nagtanong kung bakit walang label, classified information.",
+  "bawal maghabol, cardio is enough.",
+  "kapag may nagtanong kung bakit ayaw magpahawak, privacy settings.",
+  "dapat may sariling emotional support system na unan.",
+  "kapag may nagtanong kung bakit walang goodnight, tulog na raw.",
+  "never let them know your next move.",
+  "kapag may nagtanong kung bakit cold, global warming ang dahilan.",
+  "dapat may sariling timezone ang replies.",
+  "kapag may nagtanong kung bakit hindi nagkukuwento, limited edition ang information.",
+  "huwag maging attached sa taong may attachment issues.",
+  "kapag may nagtanong kung bakit ayaw mag-stay, may curfew ang kalayaan.",
+  "kapag nagmahal, mag-isip muna ng 100 reasons para umatras.",
+  "kapag naging comfortable, maghanap ng bagong discomfort.",
+  "kapag may nagparamdam ng genuine love, suspicious activity detected.",
+  "kapag may nagtanong kung bakit takot sa commitment, next question please.",
+  "kapag may nagbigay ng flowers, magtaka kung may kasunod na favor.",
+  "kapag may nagtanong kung bakit hindi nagpaparamdam, signal problem kahit full bars.",
+  "kapag may nagtanong kung bakit ayaw mag-open up, NDA signed.",
+  "kapag may nagtanong kung bakit biglang lumayo, distance makes the heart confused.",
+  "kapag may nagtanong kung mahal mo pa, loading screen forever."
+];
+
+const pages = [{ t: "cover" }];
+LAWS.forEach((_, i) => pages.push({ t: "law", n: i + 1 }));
+pages.push({ t: "blank", n: 100 }, { t: "end" });
+
+const sheet = document.getElementById("sheet");
+const stage = document.getElementById("stage");
+const barEl = document.getElementById("bar");
+const zl = document.getElementById("zl");
+const zr = document.getElementById("zr");
+
+let cur = 0;
+const seen = new Set();
+try { JSON.parse(localStorage.getItem("avoidant-seen") || "[]").forEach(n => seen.add(n)); } catch (e) {}
+function saveSeen() { try { localStorage.setItem("avoidant-seen", JSON.stringify([...seen])); } catch (e) {} }
+
+const hashOf = p => (p.t === "law" || p.t === "blank") ? "law-" + p.n : p.t;
+const indexFromHash = () => {
+  const h = location.hash.slice(1);
+  const k = pages.findIndex(p => hashOf(p) === h);
+  return k < 0 ? 0 : k;
+};
+const curly = s => s.replace(/"([^"]*)"/g, "“$1”");
+
+function starburst(el, points) {
+  const pts = [];
+  for (let i = 0; i < points * 2; i++) {
+    const r = i % 2 === 0 ? 50 : 43;
+    const a = (Math.PI * i) / points;
+    pts.push((50 + r * Math.sin(a)).toFixed(2) + "% " + (50 - r * Math.cos(a)).toFixed(2) + "%");
+  }
+  el.style.clipPath = "polygon(" + pts.join(",") + ")";
+}
+
+function lawPage(n, text, mid) {
+  const long = text.length > 58 ? " long" : "";
+  return '<article class="law-page">' +
+    '<div class="spine"><span>THE 100 LAWS OF AVOIDANT</span></div>' +
+    '<div class="leaf">' +
+      '<p class="kicker">batas blg.</p>' +
+      '<div class="numeral">' + n + '</div>' +
+      '<div class="rule"></div>' +
+      '<p class="law' + long + '">' + text + '</p>' + mid +
+      '<p class="author">' + AUTHOR + '</p>' +
+    '</div></article>';
+}
+
+function render(dir) {
+  const p = pages[cur];
+  let html = "";
+  if (p.t === "cover") {
+    html = '<article class="cover">' +
+      '<div class="seal" id="seal"><strong>SEEN</strong><small>hindi nag-reply</small></div>' +
+      '<div class="band"><div class="pre">THE 100 LAWS OF</div><h1>AVOIDANT</h1><span class="by">' + AUTHOR + '</span></div>' +
+      '<button class="btn-gold open" id="open">Open</button>' +
+      '<p class="hint">mag-swipe o i-tap ang gilid ng pahina</p>' +
+      '</article>';
+  } else if (p.t === "law") {
+    seen.add(p.n); saveSeen();
+    html = lawPage(p.n, curly(LAWS[p.n - 1]), "");
+  } else if (p.t === "blank") {
+    seen.add(100); saveSeen();
+    html = lawPage(100, "blangko ang pahinang ito.",
+      '<p class="blank-note">isulat mo ang ika-100.</p>' +
+      '<label for="law100" style="position:absolute;left:-9999px">Ika-100 batas</label>' +
+      '<textarea class="lined" id="law100" placeholder="batas blg. 100: kapag …" maxlength="280"></textarea>');
+  } else {
+    const count = [...seen].filter(n => n >= 1 && n <= 100).length;
+    html = '<article class="cover end">' +
+      '<div class="big">Katapusan</div>' +
+      '<p class="count">Nabasa mo ang ' + count + ' sa 100 batas. Walang reply na kailangan.</p>' +
+      '<div class="row"><button class="btn-gold" data-go="0">Balik sa simula</button></div>' +
+      '<p class="by end-by">' + AUTHOR + '</p>' +
+      '</article>';
+  }
+  sheet.classList.remove("flip-next", "flip-prev");
+  sheet.innerHTML = html;
+  void sheet.offsetWidth;
+  if (dir) sheet.classList.add(dir > 0 ? "flip-next" : "flip-prev");
+
+  const seal = document.getElementById("seal");
+  if (seal) starburst(seal, 18);
+  const ta = document.getElementById("law100");
+  if (ta) {
+    try { ta.value = localStorage.getItem("avoidant-law100") || ""; } catch (e) {}
+    ta.addEventListener("input", () => { try { localStorage.setItem("avoidant-law100", ta.value); } catch (e) {} });
+  }
+
+  stage.dataset.t = p.t;
+  barEl.style.width = (cur / (pages.length - 1) * 100) + "%";
+  zl.hidden = cur === 0;
+  zr.hidden = cur === pages.length - 1;
+}
+
+function go(i) {
+  i = Math.max(0, Math.min(pages.length - 1, i));
+  if (i === cur) return;
+  const dir = i > cur ? 1 : -1;
+  cur = i;
+  const h = hashOf(pages[cur]);
+  try { history.replaceState(null, "", "#" + h); } catch (e) { try { location.hash = h; } catch (e2) {} }
+  render(dir);
+}
+
+zl.addEventListener("click", () => go(cur - 1));
+zr.addEventListener("click", () => go(cur + 1));
+
+sheet.addEventListener("click", e => {
+  const el = e.target.closest("button");
+  if (!el) return;
+  if (el.id === "open") return go(1);
+  if (el.dataset.go !== undefined) return go(+el.dataset.go);
+});
+
+document.addEventListener("keydown", e => {
+  if (e.target.closest && e.target.closest("textarea, input")) return;
+  if (e.key === "ArrowRight") go(cur + 1);
+  else if (e.key === "ArrowLeft") go(cur - 1);
+});
+
+let sx = 0, sy = 0, tracking = false;
+stage.addEventListener("touchstart", e => {
+  if (e.target.closest("textarea, .btn-gold")) { tracking = false; return; }
+  tracking = true; sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+}, { passive: true });
+stage.addEventListener("touchend", e => {
+  if (!tracking) return;
+  tracking = false;
+  const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+  if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.6) go(cur + (dx < 0 ? 1 : -1));
+}, { passive: true });
+
+window.addEventListener("hashchange", () => {
+  const i = indexFromHash();
+  if (i !== cur) { const d = i > cur ? 1 : -1; cur = i; render(d); }
+});
+
+cur = indexFromHash();
+render(0);
+</script>
